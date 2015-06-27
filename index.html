@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>wallabag</title>
+        <meta name="description" content="add to wallabag">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/app.css">
+        <!-- TODO, make bower automatically to src/ -->
+        <script src="bower_components/platform/platform.js"></script>
+        <script src="bower_components/localforage/dist/localforage.js"></script>
+        <script type="text/javascript" src="js/api.js" defer></script>
+        <script type="text/javascript" src="js/app.js" defer></script>
+    </head>
+    <body>
+      <!-- imports -->
+      <link rel="import" href="bower_components/brick-common/brick-common.html">
+      <link rel="import" href="bower_components/brick-appbar/dist/brick-appbar.html">
+      <!-- <link rel="import" href="bower_components/brick-tabbar/dist/brick-tabbar.html"> -->
+      <section>
+        <brick-appbar>
+          <h2>Wallabag</h2>
+          <button id="btnSettings"><i class="fa fa-cog"></i></button>
+        </brick-appbar>
+      </section>
+
+      <section id="settingsForm" class="invisible displaynone">
+          <form>
+             <fieldset>
+               <legend class="action">Server Settings</legend>
+               <p id="settingsInfo">Please help us find your wallabag installation.</p>
+               <section>
+                 <p>URL<br>
+                   <input id="walla-url" type="text" placeholder="https://…" required="">
+                 </p>
+                 <p>
+                   <input type="button" id="settingsSave" value="Test"></input>
+                 </p>
+               </section>
+             </fieldset>
+        </form>
+      </section>
+        <section id="appBody">
+          <fieldset>
+            <legend class="action">Add URL</legend>
+            <p id="settingsInfo">Type in the URL you want to share.</p>
+            <section>
+              <p>URL<br>
+                <input id="share-url" type="text" placeholder="https://…" required="">
+              </p>
+              <p>
+                <button id="btnAdd"><i class="fa fa-bookmark"></i> Add</buton>
+              </p>
+            </section>
+          </fieldset>
+          <p>You can also add links using the <i>Share</i> activity. Long-press
+             a link and select "Add to wallabag".
+          </p>
+     </form>
+        </section>
+
+    </body>
+</html>

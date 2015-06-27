@@ -1,0 +1,40 @@
+{
+  "version": "0.1.0",
+  "name": "Add to wallabag",
+  "description": "This app allows adding URLs to your wallabag account.",
+  "launch_path": "/index.html",
+  "icons": {
+    "60": "/img/icons/icon60x60.png"
+  },
+  "developer": {
+    "name": "Frederik Braun",
+    "url": "https://frederik-braun.com"
+  },
+  "type": "privileged",
+  "permissions": {
+    "systemXHR": {
+      "description": "Required to talk to your wallabag server."
+    },
+    "alarms": {
+      "description": "Required to re-schedule synchronization, if you're offline."
+    }
+  },
+  "messages": [
+    { "alarm": "/index.html" }
+  ],
+  "activities": {
+    "share": {
+      "filters": {
+        "type": "url",
+        "url": { "required":true, "pattern":"(https?|rtsp|data):.{1,16384}" }
+      },
+      "disposition": "inline",
+      "href": "/index.html",
+      "returnValue": true
+    }
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "default_locale": "en"
+}

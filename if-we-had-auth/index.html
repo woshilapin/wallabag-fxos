@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>wallabag</title>
+        <meta name="description" content="add to wallabag">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="css/app.css">
+        <!-- TODO, make bower automatically to src/ -->
+        <script src="bower_components/platform/platform.js"></script>
+        <script src="bower_components/localforage/dist/localforage.js"></script>
+        <script type="text/javascript" src="js/api.js" defer></script>
+        <script type="text/javascript" src="js/app.js" defer></script>
+    </head>
+    <body>
+      <!-- imports -->
+      <link rel="import" href="bower_components/brick-common/brick-common.html">
+      <link rel="import" href="bower_components/brick-appbar/dist/brick-appbar.html">
+      <!-- <link rel="import" href="bower_components/brick-tabbar/dist/brick-tabbar.html"> -->
+      <section>
+        <brick-appbar>
+          <button id="btn-settings"><i class="fa fa-cog"></i></button>
+          <h2>Wallabag</h2>
+          <button id="btn-bookmark"><i class="fa fa-bookmark"></i></button>
+        </brick-appbar>
+      </section>
+
+      <section id="settingsForm" class="invisible">
+          <form>
+             <fieldset>
+               <legend class="action">Server Settings</legend>
+               <p id="settingsDemand">Please help us find your wallabag installation.</p>
+               <section>
+                 <p>URL<br>
+                   <input id="walla-url" type="text" placeholder="https://…" required="">
+                 </p>
+                 <p>Username<br>
+                   <input id="walla-user"  type="text" placeholder="" required="">
+                 </p>
+                 <p>Password<br>
+                   <input id="walla-pw" type="password" placeholder="" required="">
+                 </p>
+                 <p>
+                   <button type="submit" id="settingsSave">Save</button>
+                 </p>
+               </section>
+             </fieldset>
+        </form>
+      </section>
+        <section id="appbody">
+          <h1 id="statustitle">Status text</h1>
+          <div id="statusbody">
+            <p id="sync"><i class="fa fa-refresh fa-spin"></i></p>
+          </div>
+          <!--
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ligula dolor, tincidunt vel vehicula malesuada, luctus id lectus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id condimentum sapien. Sed vel tincidunt arcu, eget dignissim massa. Vivamus vehicula arcu sed elit cursus accumsan. Fusce posuere velit sed arcu dapibus venenatis. Sed at neque sollicitudin, dapibus lacus tempor, vulputate sem. Nunc eu ante congue, cursus ex sed, ultricies metus. Nulla erat arcu, tristique non leo sit amet, condimentum ornare mauris. Phasellus vitae tincidunt elit, sed tincidunt dolor. Vivamus quis facilisis sem. Nullam hendrerit diam nibh, at convallis tellus eleifend ut. Aliquam non mollis turpis, non molestie purus. In tempor metus ex, sit amet scelerisque nisi mollis id. Quisque lobortis est euismod gravida laoreet.Ut iaculis, nibh et pellentesque luctus, ipsum risus ultrices nisi, nec iaculis mi massa tristique magna. Duis sed dolor elit. Nunc eu vulputate est. Donec ut urna vel nulla faucibus posuere. Vivamus tincidunt urna lorem, eget aliquet tellus aliquam eu. Integer sit amet tellus aliquet, varius odio lobortis, auctor ante. Proin suscipit est et nibh fermentum, eget condimentum nunc varius. Aenean viverra viverra ligula, ut suscipit odio congue non. Vivamus vel neque enim. Donec gravida nibh a malesuada vulputate. Mauris varius scelerisque lobortis. Duis vitae mi turpis.
+Pellentesque luctus tempus diam lacinia consectetur. Aenean sed erat enim. Cras interdum interdum facilisis. Pellentesque tempus, est vitae pharetra condimentum, neque odio semper elit, id tempor est nisl eu mauris. Quisque commodo tristique tellus. Nam gravida, mauris a aliquam venenatis, est ante bibendum nibh, vitae ornare ex eros sit amet tortor. Sed aliquet fermentum nisl, in auctor justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla facilisi. Pellentesque in nisi varius, imperdiet neque eget, porttitor augue. Donec pretium justo nec cursus commodo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed felis odio, posuere non mi sit amet, auctor ullamcorper quam. Donec eu gravida dui, nec pharetra neque. Cras vel bibendum augue.
+Donec posuere lorem nisl, eu fringilla dolor egestas condimentum. Fusce sed pellentesque orci, in eleifend sapien. Ut dolor massa, maximus sit amet urna quis, tincidunt accumsan nibh. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec egestas fringilla nulla, eget gravida dolor faucibus eget. Phasellus rutrum erat mi, ut fermentum est gravida a. Duis malesuada arcu nulla, non pharetra lectus lobortis et. Pellentesque diam justo, facilisis in dui nec, porta congue leo. Nunc mattis tortor et felis maximus faucibus. Morbi molestie, tortor vel consequat auctor, orci nunc imperdiet massa, in fringilla magna dolor vel risus. Ut auctor diam quis enim dapibus tempor. Integer maximus ac nunc eu viverra.
+Suspendisse id dui feugiat, facilisis ex vel, interdum diam. Aenean ipsum nulla, cursus vitae eros a, tristique iaculis justo. Fusce quis lorem sodales, imperdiet nibh et, consequat odio. Donec a orci quis metus ultricies blandit vitae vel nulla. Quisque pharetra est eget ipsum aliquam, quis ornare magna sagittis. Maecenas fermentum orci dui, eu consectetur dui feugiat vel. Integer quis posuere eros. Integer lorem enim, venenatis in nisl a, facilisis iaculis felis. Fusce vel placerat sem. Pellentesque sodales est luctus porta gravida. Nulla facilisis ipsum cursus faucibus cursus. Suspendisse vel porttitor ex. Donec sit amet tortor ac arcu fringilla ege
+          </p>-->
+        </section>
+
+
+
+<!--
+            <brick-tabbar id="tab-bar">
+              <brick-tabbar-tab id="unread-button" target="unread" selected>
+                <i class="fa fa-book"></i> Unread
+              </brick-tabbar-tab>
+              <brick-tabbar-tab id="favorites-button" target="favorites">
+                <i class="fa fa-star"></i> Favorites
+              </brick-tabbar-tab>
+              <brick-tabbar-tab id="archive-button" target="archive">
+                <i class="fa fa-archive"></i> Archive
+              </brick-tabbar-tab>
+            </brick-tabbar>
+          </section>
+-->
+    </body>
+</html>

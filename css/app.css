@@ -1,0 +1,57 @@
+html, body {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+body {
+  font-size: 1rem;
+  background: #fff;
+}
+
+h1 {
+  margin: 0 0 1rem 0;
+}
+
+p {
+  font-size: inherit;
+}
+
+#tab-bar {
+  /** this still overlays the body section above from it.
+  we should fix that :-) */
+
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+button[type="submit"] {
+  float: right;
+}
+.invisible {
+  opacity: 0;
+}
+.fade {
+    transition: all 1s ease-out;
+}
+.displaynone {
+  display: none;
+}
+p.error {
+  color: red;
+  font-weight: bold;
+}
+p.success {
+  color: green;
+  font-weight: bold;
+}
+#settingsForm {
+  z-index: 5;
+  background-color: white;
+  position: fixed;
+  min-height: 100%;
+}
+
+
+.testImage {
+  display: none;
+}
