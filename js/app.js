@@ -47,7 +47,6 @@
         var p = document.getElementById("settingsInfo");
         p.classList.add("success");
         p.innerHTML = '<i class="fa fa-check"></i> Connection verified. Saving';
-        //XXX make invisible fade
         document.getElementById("settingsForm").classList.add("invisible", "fade");
         setTimeout(function() {
           document.getElementById("settingsForm").classList.add("displaynone");
@@ -115,14 +114,34 @@
       var option = activityRequest.source;
       if (option.name === "share") {
         if (option.data.type == "url") {
-          console.log("adding", option.data.url)
           API.addURL(option.data.url);
+          //XXX do something so this window goes away.
+          // maybe even handle activity in share.html that _also_ uses window.close
+          activityRequest.postResult(true);
         }
       }
     });
   }
-  onmessage = function(m) {
-    console.log("postMessage: ", m);
+  onmessage = function(e) {
+    function prettyURL(u) {
+      var url = (new URL(u))
+      url = url.hostname + '/'+url.pathname+url.search;
+      return url.substring(0,20)+"\u2026"; // unicode "...";
+    }
+    var expectedOrigin = (new URL(settings.hostname)).origin;
+    console.log(e);
+    if (e.origin === expectedOrigin) {
+      var result = e.data;
+      var p = document.getElementById("shareInfo");
+      var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
+      if (result['wallabag-status'] === "success") {
+        p.classList.add("success");
+        p.innerHTML = '<i class="fa fa-check"></i> <em>'+url+'</em> saved.';
+      } else {
+        p.classList.add("error");
+        p.innerHTML = '<i class="fa fa-times"></i> <em>'+url+'</em> could not be saved.';
+      }
+    }
   }
 
 //})();

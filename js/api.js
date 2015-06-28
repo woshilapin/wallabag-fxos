@@ -53,8 +53,16 @@ var API = {
       target = target.endsWith(".php") || target.endsWith("/") ? target : target+'/';
       target = target+"?action=add&autoclose=true&url="+
             encodeURIComponent(btoa(url));
-      // we do not see close-events on this window :<
+      /* we do not see close-events on this window, so we patched
+         wallabag to send a postMessage to `opener`.
+
+         I could create and return a Promise here, then call the resolve-func
+         in onmessage. But I don't like the idea of storing a list of resolve-funcs
+         with their purpose somewhere in a global array. How else would I do this?
+      */
+      //XXX works on desktop, but on Firefox I can't get it to work with opener :<
       window.open(target);
+      return;
     })
   }
 };
