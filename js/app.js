@@ -11,7 +11,10 @@
       // this is where we ca hide the spinner.
       ready = true;
     });*/
-
+    if (location.search == "?share") {
+      document.getElementById("appBody").classList.toggle("displaynone");
+      document.getElementById("activity").classList.toggle("displaynone");
+    }
     // Buttons & DOM things
     var settingsBtn = document.getElementById("btnSettings");
     settingsBtn.addEventListener("click", function() {
@@ -25,8 +28,16 @@
     bookmarkBtn.addEventListener("click", function() {
       var url = document.getElementById("share-url").value;
       API.testConnection(window.settings.hostname).then(() => {
-        API.addURL(url).then(() => {
-            console.log("now we really added it :D");
+        API.addURL(url).then((result) => {
+          var p = document.getElementById("addInfo");
+          var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
+            p.classList.add("success");
+            p.innerHTML = '<i class="fa fa-check"></i> <em>'+url+'</em> saved.';
+        }).catch((result) => {
+          var p = document.getElementById("addInfo");
+          var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
+          p.classList.add("error");
+          p.innerHTML = '<i class="fa fa-times"></i> <em>'+url+'</em> could not be saved.';
         });
       }).catch(() => {
         alert("no connection :()");
@@ -112,8 +123,6 @@
     });
   }
 
-
-
   // Handlers:
   if ('mozSetMessageHandler' in navigator) {
     navigator.mozSetMessageHandler("alarm", function (mozAlarm) {
@@ -124,23 +133,32 @@
       var option = activityRequest.source;
       if (option.name === "share") {
         if (option.data.type == "url") {
-          API.addURL(option.data.url).then(() => {
-            console.log("now we really added it :D");
-            window.close();
-          })
-          //XXX do something so this window goes away.
-          // maybe even handle activity in share.html that _also_ uses window.close
-          //activityRequest.postResult(true);
+          API.addURL(option.data.url).then((result) => {
+              var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
+              var p = document.getElementById("shareInfo");
+              var bigp = document.getElementById("shareStatus");
+              //XXX add wallabag logo for easy recognition (since this window fades away)
+              bigp.innerHTML = '<i class="fa fa-check"></i>'
+              bigp.classList.add("success");
+              p.classList.add("success");
+              p.innerHTML = '<em>'+url+'</em> saved.';
+              setTimeout(function() { window.close(); }, 1000);
+            }).catch((result) => {
+              var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
+              var p = document.getElementById("shareInfo");
+              var bigp = document.getElementById("shareStatus");
+              //XXX add wallabag logo for easy recognition (since this window fades away)              
+              bigp.innerHTML = '<i class="fa fa-times"></i>'
+              bigp.classList.add("error");
+              p.classList.add("error");
+              p.innerHTML = '<em>'+url+'</em> could not be saved.';
+              setTimeout(function() { window.close(); }, 1000);
+            });
+          }
         }
-      }
-    });
+      });
   }
   onmessage = function(e) {
-    function prettyURL(u) {
-      var url = (new URL(u))
-      url = url.hostname + '/'+url.pathname+url.search;
-      return url.substring(0,20)+"\u2026"; // unicode "...";
-    }
     var expectedOrigin = (new URL(settings.hostname)).origin;
     console.log(e);
     //XXX refactor this, so that all data goes into reject/resolve
@@ -152,21 +170,26 @@
       } else if (result['wallabag-url']+"/" in addURLPromises) {
         var [res, rej] = addURLPromises[result['wallabag-url']+'/'];
       } else {
+        var report = {message: "Couldnt find promise for URL",
+                      result: result,
+                      promiseList: Object.keys(addURLPromises)
+      };
+        navigator.sendBeacon("http://localhost:8000/", report);
       // yikes, we will keep an unfulfilled promise.
       // sendBeacon would be nice here :<
       }
-      var p = document.getElementById("addInfo");
-      var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
       if (result['wallabag-status'] === "success") {
-        p.classList.add("success");
-        p.innerHTML = '<i class="fa fa-check"></i> <em>'+url+'</em> saved.';
-        res();
+        res(result);
       } else {
-        p.classList.add("error");
-        p.innerHTML = '<i class="fa fa-times"></i> <em>'+url+'</em> could not be saved.';
-        rej();
+        rej(result);
       }
     }
   }
+
   var addURLPromises = {};
+  function prettyURL(u) {
+    var url = (new URL(u))
+    url = url.hostname + '/'+url.pathname+url.search;
+    return url.substring(0,20)+"\u2026"; // unicode "...";
+  }
 //})();

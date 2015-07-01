@@ -29,7 +29,7 @@
         "url": { "required":true, "pattern":"(https?|rtsp|data):.{1,16384}" }
       },
       "disposition": "inline",
-      "href": "/share.html",
+      "href": "/index.html?share",
       "returnValue": true
     }
   },
