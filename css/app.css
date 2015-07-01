@@ -38,7 +38,7 @@ button[type="submit"] {
   display: none;
 }
 p.error {
-  color: red;
+  color: pink;
   font-weight: bold;
 }
 p.success {
@@ -55,4 +55,18 @@ p.success {
 
 .testImage {
   display: none;
+}
+#btnAdd {
+  float: right;
+  height: 2rem;
+}
+p.hint { font-size: small; }
+p#shareInfo {
+    text-align: center;
+
+}
+p#shareStatus {
+  padding: 0px; margin: 0px;
+  text-align: center;
+  font-size: 80pt;
 }

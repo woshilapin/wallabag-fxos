@@ -48,7 +48,7 @@ var API = {
   },
   addURL: function(url) {
     // should always test connection before adding?
-    loadSettings().then((s) => {
+    return loadSettings().then((s) => {
       var target = s['hostname'];
       target = target.endsWith(".php") || target.endsWith("/") ? target : target+'/';
       target = target+"?action=add&autoclose=true&url="+
@@ -61,8 +61,10 @@ var API = {
          with their purpose somewhere in a global array. How else would I do this?
       */
       //XXX works on desktop, but on Firefox I can't get it to work with opener :<
-      window.open(target);
-      return;
+      window.open(target)
+      return new Promise(function(res,rej) {
+        addURLPromises[url] = [res,rej];
+      });
     })
   }
 };

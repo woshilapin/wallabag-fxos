@@ -25,15 +25,15 @@
     bookmarkBtn.addEventListener("click", function() {
       var url = document.getElementById("share-url").value;
       API.testConnection(window.settings.hostname).then(() => {
-        API.addURL(url);
+        API.addURL(url).then(() => {
+            console.log("now we really added it :D");
+        });
       }).catch(() => {
         alert("no connection :()");
       })
-
     })
     var saveBtn = document.getElementById("settingsSave");
-    saveBtn.addEventListener("click", (t) => {
-      console.log("click", t)
+    saveBtn.addEventListener("click", (ev) => {
       var url = document.getElementById("walla-url").value;
       var test = API.testConnection(url).then(() => {
         settings = { hostname: url};
@@ -57,6 +57,16 @@
         return {};
       });
     });
+
+    var urlInput = document.getElementById("share-url");
+    urlInput.addEventListener("input", (ev) => {
+      if (!ev.target.checkValidity()) {
+        bookmarkBtn.setAttribute("disabled", "true");
+      } else {
+        bookmarkBtn.removeAttribute("disabled");
+      }
+    })
+
 });
 
   function loadSettings(instant) {
@@ -114,10 +124,13 @@
       var option = activityRequest.source;
       if (option.name === "share") {
         if (option.data.type == "url") {
-          API.addURL(option.data.url);
+          API.addURL(option.data.url).then(() => {
+            console.log("now we really added it :D");
+            window.close();
+          })
           //XXX do something so this window goes away.
           // maybe even handle activity in share.html that _also_ uses window.close
-          activityRequest.postResult(true);
+          //activityRequest.postResult(true);
         }
       }
     });
@@ -130,18 +143,30 @@
     }
     var expectedOrigin = (new URL(settings.hostname)).origin;
     console.log(e);
+    //XXX refactor this, so that all data goes into reject/resolve
+    // and the handling happens there!
     if (e.origin === expectedOrigin) {
       var result = e.data;
-      var p = document.getElementById("shareInfo");
+      if (result['wallabag-url'] in addURLPromises) {
+        var [res, rej] = addURLPromises[result['wallabag-url']];
+      } else if (result['wallabag-url']+"/" in addURLPromises) {
+        var [res, rej] = addURLPromises[result['wallabag-url']+'/'];
+      } else {
+      // yikes, we will keep an unfulfilled promise.
+      // sendBeacon would be nice here :<
+      }
+      var p = document.getElementById("addInfo");
       var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
       if (result['wallabag-status'] === "success") {
         p.classList.add("success");
         p.innerHTML = '<i class="fa fa-check"></i> <em>'+url+'</em> saved.';
+        res();
       } else {
         p.classList.add("error");
         p.innerHTML = '<i class="fa fa-times"></i> <em>'+url+'</em> could not be saved.';
+        rej();
       }
     }
   }
-
+  var addURLPromises = {};
 //})();
