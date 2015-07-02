@@ -147,7 +147,7 @@
               var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : prettyURL(result['wallabag-url']);
               var p = document.getElementById("shareInfo");
               var bigp = document.getElementById("shareStatus");
-              //XXX add wallabag logo for easy recognition (since this window fades away)              
+              //XXX add wallabag logo for easy recognition (since this window fades away)
               bigp.innerHTML = '<i class="fa fa-times"></i>'
               bigp.classList.add("error");
               p.classList.add("error");

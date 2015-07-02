@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>wallabag</title>
         <meta name="description" content="add to wallabag">
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/app.css">
         <!-- TODO, make bower automatically to src/ -->
         <script src="bower_components/platform/platform.js"></script>
@@ -18,7 +18,7 @@
       <link rel="import" href="bower_components/brick-appbar/dist/brick-appbar.html">
       <!-- <link rel="import" href="bower_components/brick-tabbar/dist/brick-tabbar.html"> -->
       <section>
-        <brick-appbar>
+        <brick-appbar id="appBar">
           <h2>Wallabag</h2>
           <button id="btnSettings"><i class="fa fa-cog"></i></button>
         </brick-appbar>
@@ -53,8 +53,8 @@
               </p>
             </section>
           </fieldset>
-          <p class="hint">Hint: You can always add links using the <i>Share</i> activity: Long-press
-             a link and select "Add to wallabag".
+          <p class="hint">Hint: You can always add links using the <i>Share</i> activity. Long-press
+             a link and select <em>Share</em>, then <em>Add to wallabag</em>.
           </p>
      </form>
         </section>
