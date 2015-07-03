@@ -1,7 +1,14 @@
 html, body {
+ /** Initialize CSS variables for main colors */
+  --color-text: black;
+  --color-gradient-1: #1FA67A;
+  --color-gradient-2: lightgreen;
+  --color-error: red;
+  --color-success: #1F8FA6;
+
   margin: 0;
   font-family: "sans";
-  color: black;
+  color: var(--color-text);
 }
 
 body {
@@ -19,13 +26,12 @@ body {
     align-content: flex-end;
     /*align-items: center;*/
 }
-
 #appBar {
     order: 1;
     flex: 0 1 auto;
     align-self: stretch;
-    background-color: #1FA67A;
-  border-bottom: 1px solid black;
+    background-color: var(--color-gradient-1);
+  border-bottom: 1px solid var(--color-text);;
 }
 
 #appBody {
@@ -35,7 +41,7 @@ body {
   padding: 0.5rem;
   position: fixed;
   min-height: 100%;
-  background-image: linear-gradient(#1FA67A, lightgreen);
+  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
 
 }
 #activity {
@@ -45,8 +51,8 @@ body {
   min-width: 100%;
   min-height: 100%;
   z-index: 99;
-  background-color: #1FA67A;
-  background-image: linear-gradient(#1FA67A, lightgreen);
+  background-color: var(--color-gradient-1);
+  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
 
 }
 #tab-bar {
@@ -59,7 +65,7 @@ body {
 h1 {
   margin: 0 0 1rem 0;
 }
-fieldset { border: 1px solid black; }
+fieldset { border: 1px solid var(--color-text);; }
 
 button[type="submit"] {
   float: right;
@@ -77,11 +83,11 @@ input:invalid {
   display: none;
 }
 p.error {
-  color: red;
+  color: var(--color-error);
   font-weight: bold;
 }
 p.success {
-  color: #1F8FA6;
+  color: var(--color-success);
   font-weight: bold;
 }
 #settingsForm {
@@ -89,7 +95,7 @@ p.success {
   position: fixed;
   min-height: 100%;
   padding: 0.5rem;
-  background-image: linear-gradient(#1FA67A, lightgreen);
+  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
 }
 
 
@@ -101,10 +107,10 @@ input[type="url"], input[type="text"] {
 }
 #btnAdd, #settingsSave {
   float: right;
-  background-color: #1F8FA6;
+  background-color: var(--color-success);
   margin-top: 15%;
   min-width: 30%;
-  color: black;
+  color: var(--color-text);
 }
 
 p.hint { font-size: small; }
