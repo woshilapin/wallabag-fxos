@@ -1,8 +1,8 @@
 html, body {
  /** Initialize CSS variables for main colors */
   --color-text: black;
-  --color-gradient-1: #1FA67A;
-  --color-gradient-2: lightgreen;
+  --color-green: #1FA67A;
+  --color-body: white;
   --color-error: red;
   --color-success: #1F8FA6;
 
@@ -30,7 +30,7 @@ body {
     order: 1;
     flex: 0 1 auto;
     align-self: stretch;
-    background-color: var(--color-gradient-1);
+    background-color: var(--color-green);
   border-bottom: 1px solid var(--color-text);;
 }
 
@@ -41,19 +41,17 @@ body {
   padding: 0.5rem;
   position: fixed;
   min-height: 100%;
-  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
+  background-color: var(--color-body);
 
 }
 #activity {
   position: absolute;
-  top: 20%
+  top: 20%;
   width: 100%;
   min-width: 100%;
   min-height: 100%;
   z-index: 99;
-  background-color: var(--color-gradient-1);
-  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
-
+  background-color: var(--color-body);
 }
 #tab-bar {
     order: 3;
@@ -71,7 +69,7 @@ button[type="submit"] {
   float: right;
 }
 input:invalid {
-  border-color: ;
+  border-color: var(--color-error);
 }
 .invisible {
   opacity: 0;
@@ -95,7 +93,7 @@ p.success {
   position: fixed;
   min-height: 100%;
   padding: 0.5rem;
-  background-image: linear-gradient(var(--color-gradient-1), var(--color-gradient-2));
+  background-color: var(--color-body);
 }
 
 
@@ -104,12 +102,12 @@ p.success {
 }
 input[type="url"], input[type="text"] {
   width: 100%;
-  background-color: linear-gradient(transparent, var(--color-gradient-2));
   line-height: 2rem;
+  color: var(--color-text);
 }
 #btnAdd, #settingsSave {
   float: right;
-  background-color: var(--color-success);
+  background-color: var(--color-green);
   margin-top: 15%;
   min-width: 30%;
   color: var(--color-text);
