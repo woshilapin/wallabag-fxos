@@ -68,6 +68,11 @@ var API = {
     })
   },
   getFeed: function(baseUrl, type, token, userid) {
+    /*
+    gs=localforage.getItem("settings").then((s) => {
+      window.s=s; return API.getFeed(s.hostname, "home", s.token, s.userid);
+      }).then((x) => { window.x = x })
+    */
     return new Promise(function(resolve, reject) {
       var TYPES = ['home', 'fav', 'archive'];
       if (TYPES.indexOf(type) === -1) {

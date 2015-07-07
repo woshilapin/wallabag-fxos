@@ -16,6 +16,13 @@
       document.getElementById("activity").classList.toggle("displaynone");
     }
     // Buttons & DOM things
+    var btnRefresh = document.getElementById("btnRefresh");
+    btnRefresh.addEventListener("click", function() {
+      var i = document.getElementById("indicateRefresh");
+      i.classList.add("fa-spin");
+      // start spinning (code from above)
+      //XXX fetchAllFeeds.then(stopspinning)
+    })
     var btnSettings = document.getElementById("btnSettings");
     btnSettings.addEventListener("click", function() {
       var deckbox = document.getElementById("deckbox");
@@ -28,10 +35,9 @@
         }
       document.querySelector(".selected-indicator").style="";
     })
-
-    // for manual bookmarking?
-    var bookmarkBtn = document.getElementById("btnAdd");
-    bookmarkBtn.addEventListener("click", function() {
+    // for manual bookmarking
+    var btnAdd = document.getElementById("btnAdd");
+    btnAdd.addEventListener("click", function() {
       var url = document.getElementById("share-url").value;
       API.testConnection(window.settings.hostname).then(() => {
         API.addURL(url).then((result) => {
@@ -78,9 +84,9 @@
     var urlInput = document.getElementById("share-url");
     urlInput.addEventListener("input", (ev) => {
       if (!ev.target.checkValidity()) {
-        bookmarkBtn.setAttribute("disabled", "true");
+        btnAdd.setAttribute("disabled", "true");
       } else {
-        bookmarkBtn.removeAttribute("disabled");
+        btnAdd.removeAttribute("disabled");
       }
     })
 
@@ -192,6 +198,8 @@
     }
   }
 
+// UTILS:
+//XXX use addURLPromises as FIFO!!
   var addURLPromises = {};
   function prettyURL(u) {
     var url = (new URL(u))
