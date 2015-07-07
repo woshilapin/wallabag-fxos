@@ -16,11 +16,17 @@
       document.getElementById("activity").classList.toggle("displaynone");
     }
     // Buttons & DOM things
-    var settingsBtn = document.getElementById("btnSettings");
-    settingsBtn.addEventListener("click", function() {
-      document.getElementById("settingsForm").classList.remove("fade");
-      document.getElementById("settingsForm").classList.toggle("invisible");
-      document.getElementById("settingsForm").classList.toggle("displaynone");
+    var btnSettings = document.getElementById("btnSettings");
+    btnSettings.addEventListener("click", function() {
+      var deckbox = document.getElementById("deckbox");
+      deckbox.showCard(0);
+
+      // make tabbar forget what's been active previously
+      var tabIcons = document.getElementsByTagName("brick-tabbar-tab");
+      for (var i in tabIcons) {
+        nl[i].removeAttribute("selected")
+        }
+      document.querySelector(".selected-indicator").style="";
     })
 
     // for manual bookmarking?

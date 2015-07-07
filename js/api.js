@@ -66,5 +66,76 @@ var API = {
         addURLPromises[url] = [res,rej];
       });
     })
-  }
+  },
+  getFeed: function(baseUrl, type, token, userid) {
+    return new Promise(function(resolve, reject) {
+      var TYPES = ['home', 'fav', 'archive'];
+      if (TYPES.indexOf(type) === -1) {
+        reject("Feed Type not known")
+      }
+      console.log("getfeed", baseUrl, type, token, userid);
+      var url = baseUrl + '?feed&type=' +type+ '&user_id=' +userid+ '&token=' +encodeURIComponent(token);
+      var xhr = new XMLHttpRequest({mozSystem: true});
+      xhr.responseType = "xml";
+      xhr.open("GET", url);
+      xhr.onload = (function(e) {
+        //XXX we could probably do the manual filtering together with xml2json
+        var feed = API.xmlToJson(xhr.responseXML);
+        var r = {
+          fetched: feed.rss.channel.pubDate['#text'],
+          items: []
+        };
+        for (var item of feed.rss.channel.item) {
+          r.items.push({
+            text: item.description['#text'],
+            source: item.link['#text'],
+            title: item.title['#text'],
+            wallabaguri: item.source['@attributes'].url,
+            wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/)[1]
+          })
+        }
+        resolve(r);
+      }).bind(this);
+      xhr.onerror = function(e) {
+        reject("XHR Error", e);
+      }
+      xhr.send();
+    })
+  },
+  xmlToJson: function xmlToJson(xml) { // thx http://davidwalsh.name/convert-xml-json
+      var obj={};
+      if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+          obj['@attributes'] = {
+          };
+          for (var j = 0; j < xml.attributes.length; j++) {
+            var attribute = xml.attributes.item(j);
+            obj['@attributes'][attribute.nodeName] = attribute.nodeValue;
+          }
+        }
+      } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue;
+      }
+      // do children
+
+      if (xml.hasChildNodes()) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
+          var item = xml.childNodes.item(i);
+          var nodeName = item.nodeName;
+          if (typeof (obj[nodeName]) == 'undefined') {
+            obj[nodeName] = xmlToJson(item);
+          } else {
+            if (typeof (obj[nodeName].push) == 'undefined') {
+              var old = obj[nodeName];
+              obj[nodeName] = [
+              ];
+              obj[nodeName].push(old);
+            }
+            obj[nodeName].push(xmlToJson(item));
+          }
+        }
+      }
+      return obj;
+    }
 };

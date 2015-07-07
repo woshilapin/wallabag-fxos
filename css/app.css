@@ -31,7 +31,6 @@ body {
     flex: 0 1 auto;
     align-self: stretch;
     background-color: var(--color-green);
-  border-bottom: 1px solid var(--color-text);;
 }
 
 #appBody {
@@ -40,9 +39,13 @@ body {
   align-self: auto;
   padding: 0.5rem;
   position: fixed;
-  min-height: 100%;
   background-color: var(--color-body);
-
+  width: 100%;
+}
+brick-deck > brick-card {
+  position: fixed !important;
+  overflow: scroll;
+  height: 80%;
 }
 #activity {
   position: absolute;
@@ -53,13 +56,12 @@ body {
   z-index: 99;
   background-color: var(--color-body);
 }
-#tab-bar {
-    order: 3;
-    flex: 0 1 auto;
-    align-self: auto;
-    min-height: 10%;
-    }
+#tabbar {
+    position: fixed;
+    bottom: 0%;
+    border-top: 1px solid var(--color-green);
 
+}
 h1 {
   margin: 0 0 1rem 0;
 }
@@ -88,13 +90,7 @@ p.success {
   color: var(--color-success);
   font-weight: bold;
 }
-#settingsForm {
-  z-index: 5;
-  position: fixed;
-  min-height: 100%;
-  padding: 0.5rem;
-  background-color: var(--color-body);
-}
+
 
 
 .testImage {
