@@ -18,10 +18,16 @@
     // Buttons & DOM things
     var btnRefresh = document.getElementById("btnRefresh");
     btnRefresh.addEventListener("click", function() {
-      var i = document.getElementById("indicateRefresh");
-      i.classList.add("fa-spin");
-      // start spinning (code from above)
-      //XXX fetchAllFeeds.then(stopspinning)
+      spinner(true);
+      API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
+        spinner(false);
+        //displayFeeds(feeds);
+      }).catch((e) => {
+        // show error
+        spinner(false)
+        alert("Couldnt get feeds")
+      })
+
     })
     var btnSettings = document.getElementById("btnSettings");
     btnSettings.addEventListener("click", function() {
@@ -197,6 +203,15 @@
       }
     }
   }
+/// UI
+function spinner(spin) {
+  var i = document.getElementById("indicateRefresh");
+  if (spin) {
+    i.classList.add("fa-spin");
+  } else {
+    i.classList.remove("fa-spin");
+  }
+}
 
 // UTILS:
 //XXX use addURLPromises as FIFO!!
@@ -206,4 +221,7 @@
     url = url.hostname + '/'+url.pathname+url.search;
     return url.substring(0,20)+"\u2026"; // unicode "...";
   }
+
+
+
 //})();

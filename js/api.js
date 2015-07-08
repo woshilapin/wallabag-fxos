@@ -67,6 +67,13 @@ var API = {
       });
     })
   },
+  getAllFeeds: function(baseUrl, token, userid) {
+    var promises = [];
+    for (var type of ['home', 'fav', 'archive']) {
+      promises.push(this.getFeed(baseUrl, type, token, userid));
+    }
+    return Promise.all([promises]);
+  },
   getFeed: function(baseUrl, type, token, userid) {
     /*
     gs=localforage.getItem("settings").then((s) => {
@@ -78,7 +85,6 @@ var API = {
       if (TYPES.indexOf(type) === -1) {
         reject("Feed Type not known")
       }
-      console.log("getfeed", baseUrl, type, token, userid);
       var url = baseUrl + '?feed&type=' +type+ '&user_id=' +userid+ '&token=' +encodeURIComponent(token);
       var xhr = new XMLHttpRequest({mozSystem: true});
       xhr.responseType = "xml";
@@ -88,16 +94,21 @@ var API = {
         var feed = API.xmlToJson(xhr.responseXML);
         var r = {
           fetched: feed.rss.channel.pubDate['#text'],
-          items: []
+          items: [],
+          type: type
         };
-        for (var item of feed.rss.channel.item) {
-          r.items.push({
-            text: item.description['#text'],
-            source: item.link['#text'],
-            title: item.title['#text'],
-            wallabaguri: item.source['@attributes'].url,
-            wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/)[1]
-          })
+        if ('item' in feed.rss.channel) {
+          for (var item of feed.rss.channel.item) {
+            r.items.push({
+              text: item.description['#text'],
+              source: item.link['#text'],
+              title: item.title['#text'],
+              wallabaguri: item.source['@attributes'].url,
+              wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/)[1]
+            })
+          }
+        } else {
+          feed.rss.channel.item = [];
         }
         resolve(r);
       }).bind(this);
