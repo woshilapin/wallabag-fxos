@@ -1,0 +1,119 @@
+/* ----------------------------------
+ * Lists
+ * forked from https://github.com/buildingfirefoxos/Building-Blocks/tree/gh-pages/style/lists
+ * ---------------------------------- */
+[data-type="list"] {
+  font-weight: 400;
+  padding: 0 1.0rem;
+}
+
+[data-type="list"] ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+[data-type="list"] strong {
+  font-weight: 500;
+}
+
+/* Title divisors */
+[data-type="list"] header {
+  padding: 0 1.5rem;
+  margin: 0;
+  font-size: 1rem;
+  height: 2rem;
+  line-height: 2rem;
+  font-weight: normal;
+  color: #1FA67A;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* List items */
+[data-type="list"] li {
+  width: 100%;
+  height: 4rem;
+  box-sizing: border-box;
+  border-bottom: solid 0.1rem #e7e7e7;
+  color: #333;
+  margin: 0;
+  display: block;
+  position: relative;
+}
+
+[data-type="list"] li:last-child {
+  border: none;
+}
+
+/* Pressed State */
+li a:active {
+  background-color: transparent; /* remove default color for active state */
+}
+
+[data-type="list"] li > a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  height: 4rem;
+  position: relative;
+  border: none;
+  outline: none;
+}
+
+[data-type="list"].active li:after,
+[data-type="list"] li > a:after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: -1.5rem;
+  top: 0;
+  right: -1.5rem;
+  bottom: 0;
+}
+
+[data-type="list"].active li:active:after,
+[data-type="list"] li > a:active:after {
+  background-color: rgba(0,255,169,0.3);
+}
+
+/* Disabled */
+[data-type="list"] li[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.2;
+  border-color: #888;
+}
+
+
+/* Text content */
+[data-type="list"] li p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: none;
+  display: block;
+  margin: 0;
+  color: #858585;
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+}
+
+[data-type="list"] li p:first-of-type {
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+  color: #333;
+  padding: 1rem 0 0;
+}
+
+[data-type="list"] li p:only-child,
+[data-type="list"] li p:first-of-type:last-of-type {
+  line-height: 3rem;
+}
+
+[data-type="list"] li p em {
+  font-size: 1rem;
+  font-style: normal;
+}
