@@ -10,7 +10,8 @@
         <!-- TODO, make bower automatically to src/ -->
         <script src="bower_components/platform/platform.js"></script>
         <script src="bower_components/localforage/dist/localforage.js"></script>
-        <script type="text/javascript" src="js/api.js" defer></script>
+        <script type="text/javascript" src="js/api.js"></script>
+        <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/app.js" defer></script>
     </head>
     <body>
@@ -49,27 +50,26 @@
             </brick-card>
             <brick-card id="homeCard">
               <section data-type="list">
-        <header>Home (n items)</header>
-        <ul>
-          <li>
-            <p>Untitled</p>
-            <p>foo.com</p>
-          </li>
-          <li>
-            <a href="#">
-              <p>The story of lorem ipsum dolor consu lkj honey panni uga uga lul</p>
-              <p>example.com</p>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <p>Untitled</p>
-              <p>example.net</p>
-            </a>
-          </li>
-        </ul>
-      </section>
-
+                <header>Home (n items)</header>
+                <ul>
+                  <li>
+                    <p>Untitled</p>
+                    <p>foo.com</p>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <p>The story of lorem ipsum dolor consu lkj honey panni uga uga lul</p>
+                      <p>example.com</p>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <p>Untitled</p>
+                      <p>example.net</p>
+                    </a>
+                  </li>
+                </ul>
+              </section>
             </brick-card>
             <brick-card id="favoriteCard">
               load fav
@@ -121,6 +121,5 @@
             <p id="shareInfo"></p>
           </div>
         </section>
-
     </body>
 </html>
