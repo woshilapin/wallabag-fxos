@@ -26,30 +26,28 @@
         document.body.appendChild(i);
       })
     },
-    addURL: function (url) {
+    addURL: function (wallahost, url) {
       // should always test connection before adding?
-      return loadSettings().then((s) => {
-        var target = s['hostname'];
-        target = target.endsWith('.php') || target.endsWith('/') ? target : target + '/';
-        target = target + '?action=add&autoclose=true&url=' +
-        encodeURIComponent(btoa(url));
-        /* we do not see close-events on this window, so we patched
-        wallabag to send a postMessage to `opener`.
+      var target = wallahost;
+      target = target.endsWith('.php') || target.endsWith('/') ? target : target + '/';
+      target = target + '?action=add&autoclose=true&url=' +
+      encodeURIComponent(btoa(url));
+      /* we do not see close-events on this window, so we patched
+      wallabag to send a postMessage to `opener`.
 
-        I could create and return a Promise here, then call the resolve-func
-        in onmessage. But I don't like the idea of storing a list of resolve-funcs
-        with their purpose somewhere in a global array. How else would I do this?
-        */
-        //XXX works on desktop, but on Firefox I can't get it to work with opener :<
-        window.open(target);
-        return new Promise(function (res, rej) {
-          var u = new URL(url); // normalize URL
-          addURLPromises[u.href] = [
-            res,
-            rej
-          ];
-        });
-      })
+      I could create and return a Promise here, then call the resolve-func
+      in onmessage. But I don't like the idea of storing a list of resolve-funcs
+      with their purpose somewhere in a global array. How else would I do this?
+      */
+      //XXX works on desktop, but on Firefox I can't get it to work with opener :<
+      window.open(target);
+      return new Promise(function (res, rej) {
+        var u = new URL(url); // normalize URL
+        window.addURLPromises[u.href] = [
+          res,
+          rej
+        ];
+      });
     },
     getAllFeeds: function (baseUrl, token, userid) {
       var promises = [

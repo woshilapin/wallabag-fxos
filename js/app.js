@@ -1,7 +1,6 @@
 /* globals API, utils, localforage */
 (function() {
   "use strict";
-  var settings;
   var addURLPromises = {};
     function loadSettings(instant) {
       /* returns promise that resolves to settings object
@@ -80,6 +79,9 @@
   };
   window.addEventListener('WebComponentsReady', function () {
     loadSettings().then((settings) => {
+      if (location.search === "?share") {
+        return;
+      }
       console.log("Trying to get all feeds right away..")
       if ('token' in settings) {
         var t = document.getElementById('walla-token');
@@ -146,7 +148,7 @@
     btnAdd.addEventListener("click", function() {
       var url = document.getElementById("share-url").value;
       loadSettings.then((settings) => {
-        API.addURL(url).then((result) => {
+        API.addURL(settings.hostname, url).then((result) => {
           var p = document.getElementById("addInfo");
           var purl = utils.prettyURL(result['wallabag-url']);
           p.classList.add("success");
@@ -209,60 +211,67 @@
       console.log("alarm fired: " + JSON.stringify(mozAlarm.data));
     });
     navigator.mozSetMessageHandler('activity', function(activityRequest) {
+      debugger;
       var option = activityRequest.source;
       if (option.name === "share") {
         if (option.data.type === "url") {
-          API.addURL(option.data.url).then((result) => {
-            var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : utils.prettyURL(result['wallabag-url']);
-            var p = document.getElementById("shareInfo");
-            var bigp = document.getElementById("shareStatus");
-            //XXX add wallabag logo for easy recognition (since this window fades away)
-            bigp.innerHTML = '<i class="fa fa-check"></i>';
-            bigp.classList.add("success");
-            p.classList.add("success");
-            p.innerHTML = '<em>' + url + '</em> saved.';
-            setTimeout(function() { window.close(); }, 1000);
-          }).catch((result) => {
-            var url = utils.prettyURL(result['wallabag-url']);
-            var p = document.getElementById("shareInfo");
-            var bigp = document.getElementById("shareStatus");
-            //XXX add wallabag logo for easy recognition (since this window fades away)
-            bigp.innerHTML = '<i class="fa fa-times"></i>';
-            bigp.classList.add("error");
-            p.classList.add("error");
-            p.innerHTML = '<em>' + url + '</em> could not be saved.';
-            setTimeout(function() { window.close(); }, 1000);
+          loadSettings().then((settings) => {
+            API.addURL(settings.hostname, option.data.url).then((result) => {
+              var url = utils.prettyURL(result['wallabag-url']);
+              var p = document.getElementById("shareInfo");
+              var bigp = document.getElementById("shareStatus");
+              //XXX add wallabag logo for easy recognition (since this window fades away)
+              bigp.innerHTML = '<i class="fa fa-check"></i>';
+              bigp.classList.add("success");
+              p.classList.add("success");
+              p.innerHTML = '<em>' + url + '</em> saved.';
+              setTimeout(function() { window.close(); }, 1000);
+            }).catch((result) => {
+              var url = utils.prettyURL(result['wallabag-url']);
+              var p = document.getElementById("shareInfo");
+              var bigp = document.getElementById("shareStatus");
+              //XXX add wallabag logo for easy recognition (since this window fades away)
+              bigp.innerHTML = '<i class="fa fa-times"></i>';
+              bigp.classList.add("error");
+              p.classList.add("error");
+              p.innerHTML = '<em>' + url + '</em> could not be saved.';
+              setTimeout(function() { window.close(); }, 1000);
+            });
           });
         }
       }
     });
   }
   window.onmessage = function(e) {
-    var expectedOrigin = (new URL(settings.hostname)).origin;
-    //XXX refactor this, so that all data goes into reject/resolve
-    // and the handling happens there!
-    if (e.origin === expectedOrigin) {
-      var result = e.data;
-      var url = new URL(result['wallabag-url']).href; // normaliezd
-      if (url in addURLPromises) {
-        var [res, rej] = addURLPromises[url8];
-      } else {
-        var report = { message: "Couldnt find promise for URL",
-          result: result,
-          promiseList: Object.keys(addURLPromises)
-        };
-        navigator.sendBeacon("http://localhost:8000/", report);
-        // yikes, we will keep an unfulfilled promise.
-        // sendBeacon would be nice here :<
+    debugger;
+    loadSettings().then((settings) => {
+      var expectedOrigin = (new URL(settings.hostname)).origin;
+      //XXX refactor this, so that all data goes into reject/resolve
+      // and the handling happens there!
+      if (e.origin === expectedOrigin) {
+        var result = e.data;
+        var url = new URL(result['wallabag-url']).href; // normaliezd
+        if (url in addURLPromises) {
+          var [res, rej] = addURLPromises[url];
+        } else {
+          var report = { message: "Couldnt find promise for URL",
+            result: result,
+            promiseList: Object.keys(addURLPromises)
+          };
+          navigator.sendBeacon("http://localhost:8000/", report);
+          // yikes, we will keep an unfulfilled promise.
+          // sendBeacon would be nice here :<
+        }
+        if (result['wallabag-status'] === "success") {
+          res(result);
+        } else {
+          rej(result);
+        }
       }
-      if (result['wallabag-status'] === "success") {
-        res(result);
-      } else {
-        rej(result);
-      }
-    }
+    });
   };
 
 
   window.addURLPromises = addURLPromises;
+  window.loadSettings = loadSettings;
 })(window);
