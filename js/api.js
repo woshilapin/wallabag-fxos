@@ -52,7 +52,7 @@
     getAllFeeds: function (baseUrl, token, userid) {
       var promises = [
       ];
-      for (var type of['home', 'fav', 'archive']) {
+      for (var type of ['home', 'fav', 'archive']) {
         promises.push(this.getFeed(baseUrl, type, token, userid));
       }
       return Promise.all(promises);
@@ -93,7 +93,18 @@
         type: type
       };
       if ('item' in feed.rss.channel) {
-        for (var item of feed.rss.channel.item) {
+        if (feed.rss.channel.item.length) { // list of items
+          for (var item of feed.rss.channel.item) {
+            r.items.push({
+              text: item.description['#text'],
+              source: item.link['#text'],
+              title: item.title['#text'],
+              wallabaguri: item.source['@attributes'].url,
+              wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/) [1]
+            })
+          }
+        } else { // one single item of this type
+          var item = feed.rss.channel.item;
           r.items.push({
             text: item.description['#text'],
             source: item.link['#text'],

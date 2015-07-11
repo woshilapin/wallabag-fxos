@@ -48,8 +48,8 @@
       for (var f of feeds) {
         var type;
         switch(f.type) {
-          case 'Unread':
-            type = f.type
+          case 'home':
+            type = 'unread';
             break;
           case 'fav':
             type = 'favorites';
@@ -66,7 +66,7 @@
               <a href="${item.source}" data-wallabag-uid="${item.wallabguid}"
                  target="_blank"><p>${item.title}</p><p>`;
             if (item.source.indexOf("https") !== -1) {
-              items += `<i class="fa fa-lock"></i>`;
+              items += `<i class="fa fa-lock"></i>&nbsp;`;
             }
             items += Sanitizer.escapeHTML`${utils.prettyURL(item.source)}</p>
               </a></li>`;
