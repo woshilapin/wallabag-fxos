@@ -64,9 +64,11 @@
         for (var item of f.items) {
             items += Sanitizer.escapeHTML`<li>
               <a href="${item.source}" data-wallabag-uid="${item.wallabguid}"
-                 target="_blank">
-              <p>${item.title}</p>
-              <p>${utils.prettyURL(item.source)}</p>
+                 target="_blank"><p>${item.title}</p><p>`;
+            if (item.source.indexOf("https") !== -1) {
+              items += `<i class="fa fa-lock"></i>`;
+            }
+            items += Sanitizer.escapeHTML`${utils.prettyURL(item.source)}</p>
               </a></li>`;
         }
         if (f.items.length == 0) {

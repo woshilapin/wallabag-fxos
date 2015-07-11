@@ -21,7 +21,7 @@
       return u;
     }
     var url = (new URL(u));
-    url = url.hostname + '/' + url.pathname + url.search;
+    url = url.hostname + url.pathname + url.search;
     return url.substring(0, 20) + "\u2026"; // unicode "...";
   }
 
