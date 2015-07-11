@@ -3,6 +3,48 @@
   "use strict";
   var settings; // global state
   var addURLPromises = {};
+    function loadSettings(instant) {
+      /* returns promise that resolves to settings object
+      will prompt if settings are not already stored.
+      */
+      if ((settings) && ('hostname' in settings)) {
+        return Promise.resolve(settings);
+      } else if (instant === true) {
+        return Promise.resolve(false);
+      } else {
+        return localforage.getItem("settings").then((s) => {
+          if (s == null) {
+            return promptForSettings();
+          } else {
+            settings = s;
+            return Promise.resolve(s);
+          }
+        }).catch((err) => {
+          console.warn("Couldnt get settings. Prompting. Error:", err);
+          return promptForSettings()
+        });
+      }
+    }
+    function promptForSettings() {
+      /* returns promise that resovles to settings object.
+      shows settings dialog and asks for
+      */
+
+      // synthesize promise to be resolved when user clicks on "save" button.
+      return new Promise(function(resolve, reject) {
+        document.getElementById("settingsForm").classList.remove("invisible");
+        document.getElementById("settingsForm").classList.remove("displaynone");
+        var saveBtn = document.getElementById("settingsSave");
+        saveBtn.addEventListener("click", () => {
+          var url = document.getElementById("walla-url").value;
+          API.testConnection(url).then(() => {
+            resolve(settings); // settings
+          }).catch((err) => {
+            reject(err);
+          });
+        });
+      });
+    }
   window.addEventListener('DOMContentLoaded', function () {
       // show utils.spinner (possibly even earlier than this)
       loadSettings();
@@ -16,7 +58,7 @@
       utils.spinner(true);
       API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
         utils.spinner(false);
-        //displayFeeds(feeds);
+        displayFeeds(feeds);
       }).catch(() => {
         // show error
         utils.spinner(false);
@@ -90,50 +132,6 @@
       }
     });
   });
-
-  function loadSettings(instant) {
-    /* returns promise that resolves to settings object
-    will prompt if settings are not already stored.
-    */
-    if ((settings) && ('hostname' in settings)) {
-      return Promise.resolve(settings);
-    } else if (instant === true) {
-      return Promise.resolve(false);
-    } else {
-      return localforage.getItem("settings").then((s) => {
-        if (s == null) {
-          return promptForSettings();
-        } else {
-          settings = s;
-          return Promise.resolve(s);
-        }
-      }).catch((err) => {
-        console.warn("Couldnt get settings. Prompting. Error:", err);
-        return promptForSettings()
-      });
-    }
-  }
-  function promptForSettings() {
-    /* returns promise that resovles to settings object.
-    shows settings dialog and asks for
-    */
-
-    // synthesize promise to be resolved when user clicks on "save" button.
-    return new Promise(function(resolve, reject) {
-      document.getElementById("settingsForm").classList.remove("invisible");
-      document.getElementById("settingsForm").classList.remove("displaynone");
-      var saveBtn = document.getElementById("settingsSave");
-      saveBtn.addEventListener("click", () => {
-        var url = document.getElementById("walla-url").value;
-        API.testConnection(url).then(() => {
-          resolve(settings); // settings
-        }).catch((err) => {
-          reject(err);
-        });
-      });
-    });
-  }
-
   // Handlers:
   if ('mozSetMessageHandler' in navigator) {
     navigator.mozSetMessageHandler("alarm", function (mozAlarm) {
