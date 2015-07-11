@@ -43,7 +43,8 @@
         //XXX works on desktop, but on Firefox I can't get it to work with opener :<
         window.open(target)
         return new Promise(function (res, rej) {
-          addURLPromises[url] = [
+          var u = new URL(url); // normalize URL
+          addURLPromises[u.href] = [
             res,
             rej
           ];

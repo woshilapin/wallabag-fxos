@@ -154,7 +154,7 @@
             p.innerHTML = '<em>' + url + '</em> saved.';
             setTimeout(function() { window.close(); }, 1000);
           }).catch((result) => {
-            var url = result['wallabag-url'].length < 20 ? result['wallabag-url'] : utils.prettyURL(result['wallabag-url']);
+            var url = utils.prettyURL(result['wallabag-url']);
             var p = document.getElementById("shareInfo");
             var bigp = document.getElementById("shareStatus");
             //XXX add wallabag logo for easy recognition (since this window fades away)
@@ -174,10 +174,9 @@
     // and the handling happens there!
     if (e.origin === expectedOrigin) {
       var result = e.data;
-      if (result['wallabag-url'] in addURLPromises) {
-        var [res, rej] = addURLPromises[result['wallabag-url']];
-      } else if (result['wallabag-url'] + "/" in addURLPromises) {
-        var [res, rej] = addURLPromises[result['wallabag-url'] + '/'];
+      var url = new URL(result['wallabag-url']).href; // normaliezd
+      if (url in addURLPromises) {
+        var [res, rej] = addURLPromises[url8];
       } else {
         var report = { message: "Couldnt find promise for URL",
           result: result,
@@ -195,4 +194,6 @@
     }
   };
 
-})();
+
+  window.addURLPromises = addURLPromises;
+})(window);
