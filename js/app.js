@@ -6,8 +6,6 @@
   window.addEventListener('DOMContentLoaded', function () {
       // show utils.spinner (possibly even earlier than this)
       loadSettings();
-
-
     if (location.search === "?share") {
       document.getElementById("appBody").classList.toggle("displaynone");
       document.getElementById("activity").classList.toggle("displaynone");
@@ -170,7 +168,7 @@
       }
     });
   }
-  onmessage = function(e) {
+  window.onmessage = function(e) {
     var expectedOrigin = (new URL(settings.hostname)).origin;
     //XXX refactor this, so that all data goes into reject/resolve
     // and the handling happens there!

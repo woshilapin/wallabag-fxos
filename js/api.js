@@ -1,125 +1,119 @@
-var API = {
-  testConnection: function testConnection(url) {
-    /* resolves to settings object
-    or rejects with text to display */
-    url = url.endsWith(".php") || url.endsWith("/") ? url : url+'/';
-
-    return this.checkWallabag(url).then((token) => {
-      return Promise.resolve(true);
-    });
-  },
-  /*getCSRFToken: function(url) {
-    // get CSRF token -.-
-    return new Promise(function(resolve, reject) {
-      var suffix = "?login";
-      var tokenXHR = new XMLHttpRequest({mozSystem: true});
-      tokenXHR.open("GET", url+suffix);
-      tokenXHR.send();
-      tokenXHR.onload = function(target) {
-        var match = tokenXHR.response.match(/name="token" value="([a-z0-9]+)"/);
-        if (match) {
-          resolve(match[1]);
-        } else {
-          reject("Couldn't find login form at "+url+suffix);
-        }
-      }
-      tokenXHR.onerror = function(e) {
-        console.error("token XHR request raised onerror!", e)
-        reject("Could not ocnnect to "+url+suffix);
-      }
-    });
-  },*/
-  checkWallabag: function checkWallabag(url) {
-    return new Promise(function(resolve, reject) {
-      var i = document.createElement("img");
-      url = url.endsWith(".php") || url.endsWith("/") ? url : url+'/';
-      i.src = url+'themes/default/img/logo.svg';
-      i.onload = function() {
-        resolve(true);
-        document.body.removeChild(i);
-      }
-      i.onerror = function() {
-        reject(false);
-        document.body.removeChild(i);
-       }
-      i.classList.add("testImage");
-      document.body.appendChild(i);
-    })
-  },
-  addURL: function(url) {
-    // should always test connection before adding?
-    return loadSettings().then((s) => {
-      var target = s['hostname'];
-      target = target.endsWith(".php") || target.endsWith("/") ? target : target+'/';
-      target = target+"?action=add&autoclose=true&url="+
-            encodeURIComponent(btoa(url));
-      /* we do not see close-events on this window, so we patched
-         wallabag to send a postMessage to `opener`.
-
-         I could create and return a Promise here, then call the resolve-func
-         in onmessage. But I don't like the idea of storing a list of resolve-funcs
-         with their purpose somewhere in a global array. How else would I do this?
-      */
-      //XXX works on desktop, but on Firefox I can't get it to work with opener :<
-      window.open(target)
-      return new Promise(function(res,rej) {
-        addURLPromises[url] = [res,rej];
+(function (w) {
+  'use strict'
+  var API = {
+    testConnection: function testConnection(url) {
+      /* resolves to settings object
+      or rejects with text to display */
+      url = url.endsWith('.php') || url.endsWith('/') ? url : url + '/';
+      return this.checkWallabag(url).then((token) => {
+        return Promise.resolve(true);
       });
-    })
-  },
-  getAllFeeds: function(baseUrl, token, userid) {
-    var promises = [];
-    for (var type of ['home', 'fav', 'archive']) {
-      promises.push(this.getFeed(baseUrl, type, token, userid));
-    }
-    return Promise.all([promises]);
-  },
-  getFeed: function(baseUrl, type, token, userid) {
-    /*
-    gs=localforage.getItem("settings").then((s) => {
-      window.s=s; return API.getFeed(s.hostname, "home", s.token, s.userid);
-      }).then((x) => { window.x = x })
-    */
-    return new Promise(function(resolve, reject) {
-      var TYPES = ['home', 'fav', 'archive'];
-      if (TYPES.indexOf(type) === -1) {
-        reject("Feed Type not known")
-      }
-      var url = baseUrl + '?feed&type=' +type+ '&user_id=' +userid+ '&token=' +encodeURIComponent(token);
-      var xhr = new XMLHttpRequest({mozSystem: true});
-      xhr.responseType = "xml";
-      xhr.open("GET", url);
-      xhr.onload = (function(e) {
-        //XXX we could probably do the manual filtering together with xml2json
-        var feed = API.xmlToJson(xhr.responseXML);
-        var r = {
-          fetched: feed.rss.channel.pubDate['#text'],
-          items: [],
-          type: type
-        };
-        if ('item' in feed.rss.channel) {
-          for (var item of feed.rss.channel.item) {
-            r.items.push({
-              text: item.description['#text'],
-              source: item.link['#text'],
-              title: item.title['#text'],
-              wallabaguri: item.source['@attributes'].url,
-              wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/)[1]
-            })
-          }
-        } else {
-          feed.rss.channel.item = [];
+    },
+    checkWallabag: function checkWallabag(url) {
+      return new Promise(function (resolve, reject) {
+        var i = document.createElement('img');
+        url = url.endsWith('.php') || url.endsWith('/') ? url : url + '/';
+        i.src = url + 'themes/default/img/logo.svg';
+        i.onload = function () {
+          resolve(true);
+          document.body.removeChild(i);
         }
-        resolve(r);
-      }).bind(this);
-      xhr.onerror = function(e) {
-        reject("XHR Error", e);
+        i.onerror = function () {
+          reject(false);
+          document.body.removeChild(i);
+        }
+        i.classList.add('testImage');
+        document.body.appendChild(i);
+      })
+    },
+    addURL: function (url) {
+      // should always test connection before adding?
+      return loadSettings().then((s) => {
+        var target = s['hostname'];
+        target = target.endsWith('.php') || target.endsWith('/') ? target : target + '/';
+        target = target + '?action=add&autoclose=true&url=' +
+        encodeURIComponent(btoa(url));
+        /* we do not see close-events on this window, so we patched
+        wallabag to send a postMessage to `opener`.
+
+        I could create and return a Promise here, then call the resolve-func
+        in onmessage. But I don't like the idea of storing a list of resolve-funcs
+        with their purpose somewhere in a global array. How else would I do this?
+        */
+        //XXX works on desktop, but on Firefox I can't get it to work with opener :<
+        window.open(target)
+        return new Promise(function (res, rej) {
+          addURLPromises[url] = [
+            res,
+            rej
+          ];
+        });
+      })
+    },
+    getAllFeeds: function (baseUrl, token, userid) {
+      var promises = [
+      ];
+      for (var type of['home', 'fav', 'archive']) {
+        promises.push(this.getFeed(baseUrl, type, token, userid));
       }
-      xhr.send();
-    })
-  },
-  xmlToJson: function xmlToJson(xml) { // thx http://davidwalsh.name/convert-xml-json
-      var obj={};
+      return Promise.all([promises]);
+    },
+    getFeed: function (baseUrl, type, token, userid) {
+      return new Promise(function (resolve, reject) {
+        var TYPES = [
+          'home',
+          'fav',
+          'archive'
+        ];
+        if (TYPES.indexOf(type) === - 1) {
+          reject('Feed Type not known')
+        }
+        var url = baseUrl + '?feed&type=' + type + '&user_id=' + userid + '&token=' + encodeURIComponent(token);
+        var xhr = new XMLHttpRequest({
+          mozSystem: true
+        });
+        xhr.responseType = 'xml';
+        xhr.open('GET', url);
+        xhr.onload = (function (e) {
+          r = this.MyXmlToJson(xhr.responseXML)
+          resolve(r);
+        }).bind(this);
+        xhr.onerror = function (e) {
+          reject('XHR Error', e);
+        }
+        xhr.send();
+      })
+    },
+    MyXmlToJson: function MyXmlToJson(xml) {
+      // turns the horrible "json-xml" into something readable
+      var feed = API.xmlToJson(xml);
+      var r = {
+        fetched: feed.rss.channel.pubDate['#text'],
+        items: [
+        ],
+        type: type
+      };
+      if ('item' in feed.rss.channel) {
+        for (var item of feed.rss.channel.item) {
+          r.items.push({
+            text: item.description['#text'],
+            source: item.link['#text'],
+            title: item.title['#text'],
+            wallabaguri: item.source['@attributes'].url,
+            wallabguid: item.source['@attributes'].url.match(/&id=(\d+)/) [1]
+          })
+        }
+      } else {
+        feed.rss.channel.item = [
+        ];
+      }
+      return feed;
+    },
+    xmlToJson: function xmlToJson(xml) {
+      // thx http://davidwalsh.name/convert-xml-json
+      //XXX rewrite this funciton to return what MyXmlToJson does & combine them.
+      var obj = {
+      };
       if (xml.nodeType == 1) { // element
         // do attributes
         if (xml.attributes.length > 0) {
@@ -154,4 +148,6 @@ var API = {
       }
       return obj;
     }
-};
+  };
+  w.API = API;
+})(window)
