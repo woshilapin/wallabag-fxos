@@ -20,7 +20,7 @@
           }
         }).catch((err) => {
           console.warn("Couldnt get settings. Prompting. Error:", err);
-          return promptForSettings()
+          return promptForSettings();
         });
       }
     }
@@ -36,13 +36,14 @@
         saveBtn.addEventListener("click", () => {
           var url = document.getElementById("walla-url").value;
           API.testConnection(url).then(() => {
-            resolve(settings); // settings
+            resolve({ hostname: url }); // settings
           }).catch((err) => {
             reject(err);
           });
         });
       });
-    }
+    };
+
     function displayFeeds(feeds) {
       for (var f of feeds) {
         var type;
@@ -177,7 +178,7 @@
         return;
       }
       test.then(() => {
-        settings = { hostname: url,
+        var settings = { hostname: url,
                      userid: uid,
                      token: token };
         return localforage.setItem("settings", settings);
@@ -211,7 +212,6 @@
       console.log("alarm fired: " + JSON.stringify(mozAlarm.data));
     });
     navigator.mozSetMessageHandler('activity', function(activityRequest) {
-      debugger;
       var option = activityRequest.source;
       if (option.name === "share") {
         if (option.data.type === "url") {
@@ -243,7 +243,6 @@
     });
   }
   window.onmessage = function(e) {
-    debugger;
     loadSettings().then((settings) => {
       var expectedOrigin = (new URL(settings.hostname)).origin;
       //XXX refactor this, so that all data goes into reject/resolve

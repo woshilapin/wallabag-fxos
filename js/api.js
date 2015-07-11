@@ -5,7 +5,7 @@
       /* resolves to settings object
       or rejects with text to display */
       url = url.endsWith('.php') || url.endsWith('/') ? url : url + '/';
-      return this.checkWallabag(url).then((token) => {
+      return this.checkWallabag(url).then(() => {
         return Promise.resolve(true);
       });
     },
