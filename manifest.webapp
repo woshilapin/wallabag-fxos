@@ -14,7 +14,7 @@
   "permissions": {
     "systemXHR": {
       "description": "Required to talk to your wallabag server."
-    },
+    }
   },
   "messages": [
     { "alarm": "/index.html?alarm" }
