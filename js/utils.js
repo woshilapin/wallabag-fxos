@@ -17,12 +17,12 @@
   // UTILS:
   //XXX use addURLPromises as FIFO!!
   function prettyURL(u) {
-    if (u.length < 20) {
+    if (u.length < 40) {
       return u;
     }
     var url = (new URL(u));
     url = url.hostname + url.pathname + url.search;
-    return url.substring(0, 20) + "\u2026"; // unicode "...";
+    return url.substring(0, 40) + "\u2026"; // unicode "...";
   }
 
   w.utils = {

@@ -62,14 +62,15 @@
         var items = '';
         var end = `</ul>`;
         for (var item of f.items) {
-            items += Sanitizer.escapeHTML`<li>
-              <a href="${item.source}" data-wallabag-uid="${item.wallabguid}"
-                 target="_blank"><p>${item.title}</p><p>`;
-            if (item.source.indexOf("https") !== -1) {
-              items += `<i class="fa fa-lock"></i>&nbsp;`;
-            }
-            items += Sanitizer.escapeHTML`${utils.prettyURL(item.source)}</p>
-              </a></li>`;
+          var title = item.title === "Untitled" ? utils.prettyURL(item.source) : item.title;
+          items += Sanitizer.escapeHTML`<li>
+            <a href="${item.source}" data-wallabag-uid="${item.wallabguid}"
+               target="_blank"><p>${title}</p><p>`;
+          if (item.source.indexOf("https") !== -1) {
+            items += `<i class="fa fa-lock"></i>&nbsp;`;
+          }
+          items += Sanitizer.escapeHTML`${utils.prettyURL(item.source)}</p>
+            </a></li>`;
         }
         if (f.items.length == 0) {
           items = `<div class="empty">No items in your list</div>`;
