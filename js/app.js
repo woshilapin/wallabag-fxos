@@ -48,7 +48,7 @@
       for (var f of feeds) {
         var type;
         switch(f.type) {
-          case 'home':
+          case 'Unread':
             type = f.type
             break;
           case 'fav':
@@ -190,7 +190,7 @@
       test.then(() => {
         var p = document.getElementById("settingsInfo");
         p.classList.add("success");
-        p.innerHTML = '<i class="fa fa-check"></i> Connection verified. Saving';
+        p.innerHTML = '<i class="fa fa-check"></i> Connection verified.';
       }).catch(() => {
         alert("Could not use IndexedDB to store things. This should not happen.");
         return {};
