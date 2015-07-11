@@ -41,7 +41,7 @@
         with their purpose somewhere in a global array. How else would I do this?
         */
         //XXX works on desktop, but on Firefox I can't get it to work with opener :<
-        window.open(target)
+        window.open(target);
         return new Promise(function (res, rej) {
           var u = new URL(url); // normalize URL
           addURLPromises[u.href] = [
@@ -57,7 +57,7 @@
       for (var type of['home', 'fav', 'archive']) {
         promises.push(this.getFeed(baseUrl, type, token, userid));
       }
-      return Promise.all([promises]);
+      return Promise.all(promises);
     },
     getFeed: function (baseUrl, type, token, userid) {
       return new Promise(function (resolve, reject) {
@@ -76,7 +76,7 @@
         xhr.responseType = 'xml';
         xhr.open('GET', url);
         xhr.onload = (function (e) {
-          r = this.MyXmlToJson(xhr.responseXML)
+          var r = API.MyXmlToJson(type, xhr.responseXML)
           resolve(r);
         }).bind(this);
         xhr.onerror = function (e) {
@@ -85,7 +85,7 @@
         xhr.send();
       })
     },
-    MyXmlToJson: function MyXmlToJson(xml) {
+    MyXmlToJson: function MyXmlToJson(type, xml) {
       // turns the horrible "json-xml" into something readable
       var feed = API.xmlToJson(xml);
       var r = {
@@ -105,10 +105,9 @@
           })
         }
       } else {
-        feed.rss.channel.item = [
-        ];
+        r.items = [];
       }
-      return feed;
+      return r;
     },
     xmlToJson: function xmlToJson(xml) {
       // thx http://davidwalsh.name/convert-xml-json

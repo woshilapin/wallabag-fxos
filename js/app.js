@@ -1,14 +1,14 @@
 /* globals API, utils, localforage */
 (function() {
   "use strict";
-  var settings; // global state
+  var settings;
   var addURLPromises = {};
     function loadSettings(instant) {
       /* returns promise that resolves to settings object
       will prompt if settings are not already stored.
       */
-      if ((settings) && ('hostname' in settings)) {
-        return Promise.resolve(settings);
+      if ((window.settings) && ('hostname' in window.settings)) {
+        return Promise.resolve(window.settings);
       } else if (instant === true) {
         return Promise.resolve(false);
       } else {
@@ -16,7 +16,7 @@
           if (s == null) {
             return promptForSettings();
           } else {
-            settings = s;
+            window.settings = s;
             return Promise.resolve(s);
           }
         }).catch((err) => {
@@ -29,11 +29,10 @@
       /* returns promise that resovles to settings object.
       shows settings dialog and asks for
       */
-
+      var deckbox = document.getElementById("deckbox");
+      deckbox.showCard(0);
       // synthesize promise to be resolved when user clicks on "save" button.
       return new Promise(function(resolve, reject) {
-        document.getElementById("settingsForm").classList.remove("invisible");
-        document.getElementById("settingsForm").classList.remove("displaynone");
         var saveBtn = document.getElementById("settingsSave");
         saveBtn.addEventListener("click", () => {
           var url = document.getElementById("walla-url").value;
@@ -45,9 +44,78 @@
         });
       });
     }
-  window.addEventListener('DOMContentLoaded', function () {
-      // show utils.spinner (possibly even earlier than this)
-      loadSettings();
+    function displayFeeds(feeds) {
+      for (var f of feeds) {
+        var type;
+        switch(f.type) {
+          case 'home':
+            type = f.type
+            break;
+          case 'fav':
+            type = 'favorites';
+            break;
+          case 'archive':
+            type = 'archived';
+            break;
+        }
+        var begin = Sanitizer.escapeHTML`<header>${type} (${f.items.length})</header><ul>`;
+        var items = '';
+        var end = `</ul>`;
+        for (var item of f.items) {
+            items += Sanitizer.escapeHTML`<li>
+              <a href="${item.source}" data-wallabag-uid="${item.wallabguid}"
+                 target="_blank">
+              <p>${item.title}</p>
+              <p>${utils.prettyURL(item.source)}</p>
+              </a></li>`;
+        }
+        if (f.items.length == 0) {
+          items = `<div class="empty">No items in your list</div>`;
+        }
+        var template = begin + items + end;
+        var list = document.getElementById("list-"+f.type);
+        list.innerHTML = template;
+        localforage.setItem("html-cache-"+f.type, template);
+      }
+  };
+  window.addEventListener('WebComponentsReady', function () {
+    loadSettings().then((settings) => {
+      console.log("Trying to get all feeds right away..")
+      if ('token' in settings) {
+        var t = document.getElementById('walla-token');
+        t.value = settings.token;
+      }
+      if ('userid' in settings) {
+        var uid = document.getElementById('walla-uid');
+        uid.value = settings.userid;
+      }
+      if ('hostname' in settings) {
+        var url = document.getElementById('walla-url');
+        url.value = settings.hostname;
+      }
+      if (('token' in settings) && ('userid' in settings) && ('hostname' in settings)) {
+        API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
+          utils.spinner(false);
+          displayFeeds(feeds);
+        }).catch(() => {
+          console.log("Couldnt get feeds. Restoring from cache.")
+          for (var type of['home', 'fav', 'archive']) {
+            localforage.getItem("html-cache-"+type).then((c) => {
+              var list = document.getElementById("list-"+type);
+              list.innerHTML = c;
+            });
+          }
+        });
+      } else {
+        console.log("Token is not known... We can disable most of the UI");
+        // Disable UI
+        for (var type of['home', 'fav', 'archive']) {
+          var list = document.getElementById("list-"+type);
+          list.innerHTML = `<div class="empty">
+            Can not fetch lists without user id and token.</div>`;
+        }
+      }
+    });
     if (location.search === "?share") {
       document.getElementById("appBody").classList.toggle("displaynone");
       document.getElementById("activity").classList.toggle("displaynone");
@@ -56,33 +124,28 @@
     var btnRefresh = document.getElementById("btnRefresh");
     btnRefresh.addEventListener("click", function() {
       utils.spinner(true);
-      API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
-        utils.spinner(false);
-        displayFeeds(feeds);
-      }).catch(() => {
-        // show error
-        utils.spinner(false);
-        alert("Couldnt get feeds");
+      loadSettings().then((settings) => {
+        API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
+          utils.spinner(false);
+          displayFeeds(feeds);
+        });
       });
-
     });
     var btnSettings = document.getElementById("btnSettings");
     btnSettings.addEventListener("click", function() {
       var deckbox = document.getElementById("deckbox");
       deckbox.showCard(0);
-
       // make tabbar forget what's been active previously
       var tabIcons = document.getElementsByTagName("brick-tabbar-tab");
       for (var i in tabIcons) {
         tabIcons[i].removeAttribute("selected");
       }
-      document.querySelector(".selected-indicator").style = "";
     });
     // for manual bookmarking
     var btnAdd = document.getElementById("btnAdd");
     btnAdd.addEventListener("click", function() {
       var url = document.getElementById("share-url").value;
-      API.testConnection(window.settings.hostname).then(() => {
+      loadSettings.then((settings) => {
         API.addURL(url).then((result) => {
           var p = document.getElementById("addInfo");
           var purl = utils.prettyURL(result['wallabag-url']);
@@ -101,8 +164,20 @@
     var saveBtn = document.getElementById("settingsSave");
     saveBtn.addEventListener("click", () => {
       var url = document.getElementById("walla-url").value;
-      var test = API.testConnection(url).then(() => {
-        settings = { hostname: url};
+      var uid = document.getElementById("walla-uid").value;
+      var token = document.getElementById("walla-token").value;
+      var test;
+      if (url && uid && token) {
+        var test = API.getFeed(url, 'home', token, uid);
+      } else if (url) {
+        var test = API.testConnection(url);
+      } else { // nothing? really?
+        return;
+      }
+      test.then(() => {
+        settings = { hostname: url,
+                     userid: uid,
+                     token: token };
         return localforage.setItem("settings", settings);
       }).catch((err) => {
         var p = document.getElementById("settingsInfo");
@@ -113,10 +188,6 @@
         var p = document.getElementById("settingsInfo");
         p.classList.add("success");
         p.innerHTML = '<i class="fa fa-check"></i> Connection verified. Saving';
-        document.getElementById("settingsForm").classList.add("invisible", "fade");
-        setTimeout(function() {
-          document.getElementById("settingsForm").classList.add("displaynone");
-        }, 1050);
       }).catch(() => {
         alert("Could not use IndexedDB to store things. This should not happen.");
         return {};

@@ -117,3 +117,9 @@ li a:active {
   font-size: 1rem;
   font-style: normal;
 }
+
+/* Empty list */
+[data-type="list"] div.empty {
+  padding-top: 2rem;
+  font-size: 1.3rem;
+}

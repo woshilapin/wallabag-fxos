@@ -10,8 +10,10 @@
         <!-- TODO, make bower automatically to src/ -->
         <script src="bower_components/platform/platform.js"></script>
         <script src="bower_components/localforage/dist/localforage.js"></script>
+        <script type="text/javascript" src="js/sanitizer.js"></script>
         <script type="text/javascript" src="js/api.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
+
         <script type="text/javascript" src="js/app.js" defer></script>
     </head>
     <body>
@@ -40,42 +42,41 @@
                          <p>URL<br>
                            <input id="walla-url" type="text" placeholder="https://…" required="">
                          </p>
+                         <p>User Id<br>
+                           <input id="walla-uid" type="text" placeholder="1" value="1" required="">
+                         </p>
+                         <p>Token<br>
+                           <input id="walla-token" type="text" placeholder="" required="">
+                         </p>
                          <p>
                            <input type="button" id="settingsSave" value="Test"></input>
                          </p>
                        </section>
                      </fieldset>
+                     <p class="hint">Hint: You can leave user id and token empty,
+                       if you just want to use Sharing.
+                       Note that this always requires your username and password.</em>.
+                     </p>
                 </form>
               </section>
             </brick-card>
             <brick-card id="homeCard">
-              <section data-type="list">
-                <header>Home (n items)</header>
-                <ul>
-                  <li>
-                    <p>Untitled</p>
-                    <p>foo.com</p>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <p>The story of lorem ipsum dolor consu lkj honey panni uga uga lul</p>
-                      <p>example.com</p>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <p>Untitled</p>
-                      <p>example.net</p>
-                    </a>
-                  </li>
-                </ul>
+              <section data-type="list" id="list-home">
+                <header>Home (0 items)</header>
+                <div>Loading...</div>
               </section>
             </brick-card>
             <brick-card id="favoriteCard">
-              load fav
+              <section data-type="list" id="list-fav">
+                <header>Favorites (0 items)</header>
+                <div>Loading...</div>
+              </section>
             </brick-card>
             <brick-card id="archiveCard">
-              load archive
+              <section data-type="list" id="list-archive">
+                <header>Archived (0 items)</header>
+                <div>Loading...</div>
+              </section>
             </brick-card>
             <brick-card id="addCard">
               <form>
