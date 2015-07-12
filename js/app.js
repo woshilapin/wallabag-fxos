@@ -145,6 +145,7 @@
       var tabIcons = document.getElementsByTagName("brick-tabbar-tab");
       for (var i in tabIcons) {
         tabIcons[i].removeAttribute("selected");
+        // #10: remember which one to go back to when clicking again.
       }
       tabbar.querySelector("div.selected-indicator").style = "";
     });

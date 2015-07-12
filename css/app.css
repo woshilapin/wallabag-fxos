@@ -33,6 +33,10 @@ body {
     background-color: var(--color-green);
 }
 
+#appBar button {
+  font-size: 1.2rem;
+}
+
 #appBody {
   order: 2;
   flex: 0 1 auto;
