@@ -146,6 +146,7 @@
       for (var i in tabIcons) {
         tabIcons[i].removeAttribute("selected");
       }
+      tabbar.querySelector("div.selected-indicator").style = "";
     });
     // for manual bookmarking
     var btnAdd = document.getElementById("btnAdd");
