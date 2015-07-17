@@ -101,6 +101,7 @@
       }
       if (('token' in settings) && ('userid' in settings) && ('hostname' in settings)) {
         API.getAllFeeds(settings.hostname, settings.token, settings.userid).then((feeds) => {
+          console.log("Success.")
           utils.spinner(false);
           displayFeeds(feeds);
         }).catch(() => {
@@ -158,12 +159,13 @@
           var p = document.getElementById("addInfo");
           var purl = utils.prettyURL(result['wallabag-url']);
           p.classList.add("success");
-          p.innerHTML = '<i class="fa fa-check"></i> <em>' + purl + '</em> saved.';
+          p.innerHTML = Sanitizer.escapeHTML`<i class="fa fa-check"></i> <em>${purl}</em> saved.`;
         }).catch((result) => {
           var p = document.getElementById("addInfo");
           var purl = utils.prettyURL(result['wallabag-url']);
           p.classList.add("error");
-          p.innerHTML = '<i class="fa fa-times"></i> <em>' + purl + '</em> could not be saved.';
+          p.innerHTML = Sanitizer.escapeHTML`<i class="fa fa-times"></i> <em>${purl}</em> could not be saved.`;
+          ///XXX re-schedule
         });
       }).catch(() => {
         alert("no connection :()");
@@ -229,7 +231,7 @@
               bigp.innerHTML = '<i class="fa fa-check"></i>';
               bigp.classList.add("success");
               p.classList.add("success");
-              p.innerHTML = '<em>' + url + '</em> saved.';
+              p.innerHTML = Sanitizer.escapeHTML`<em>${url}</em> saved.`;
               setTimeout(function() { window.close(); }, 1000);
             }).catch((result) => {
               var url = utils.prettyURL(result['wallabag-url']);
@@ -239,7 +241,8 @@
               bigp.innerHTML = '<i class="fa fa-times"></i>';
               bigp.classList.add("error");
               p.classList.add("error");
-              p.innerHTML = '<em>' + url + '</em> could not be saved.';
+              p.innerHTML = Sanitizer.escapeHTML`<em>${url}</em> could not be saved.`;
+              //XXX re-schedule!
               setTimeout(function() { window.close(); }, 1000);
             });
           });
