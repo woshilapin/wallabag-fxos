@@ -19,7 +19,7 @@
 }
 
 /* Title divisors */
-[data-type="list"] header {
+[data-type="list"] header, legend {
   padding: 0 1.5rem;
   margin: 0;
   font-size: 1rem;
