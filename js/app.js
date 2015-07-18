@@ -2,6 +2,7 @@
 (function() {
   "use strict";
   var addURLPromises = {};
+  var lastCard;
     function loadSettings(instant) {
       /* returns promise that resolves to settings object
       will prompt if settings are not already stored.
@@ -141,14 +142,23 @@
     var btnSettings = document.getElementById("btnSettings");
     btnSettings.addEventListener("click", function() {
       var deckbox = document.getElementById("deckbox");
-      deckbox.showCard(0);
-      // make tabbar forget what's been active previously
-      var tabIcons = document.getElementsByTagName("brick-tabbar-tab");
-      for (var i in tabIcons) {
-        tabIcons[i].removeAttribute("selected");
-        // #10: remember which one to go back to when clicking again.
+      if (deckbox.selectedIndex !== 0) { // not in Settings yet
+        lastCard = deckbox.selectedIndex;
+        deckbox.showCard(0);
+        // make tabbar forget what's been active previously
+        var tabIcons = document.getElementsByTagName("brick-tabbar-tab");
+        for (var i in tabIcons) {
+          tabIcons[i].removeAttribute("selected");
+        }
+        // note: tabbar is global through id attribute
+        tabbar.querySelector("div.selected-indicator").style = "";
+      } else {
+        deckbox.showCard(lastCard);
+        // note: tabbar is global through id attribute
+        tabbar.querySelector("div.selected-indicator").style = "width: 25%; transform: translateX("+(100*(lastCard-1))+"%);";
+        tabbar.querySelectorAll("brick-tabbar-tab")[lastCard-1].setAttribute("selected", "true");
+        // would love to call .select() on the tab, but it's most oftenly null :/
       }
-      tabbar.querySelector("div.selected-indicator").style = "";
     });
     // for manual bookmarking
     var btnAdd = document.getElementById("btnAdd");
