@@ -77,7 +77,7 @@
           var r = API.MyXmlToJson(type, xhr.responseXML)
           resolve(r);
         }).bind(this);
-        xhr.onerror = function (e) {
+        xhr.onerror = xhr.ontimeout = function (e) {
           reject('XHR Error', e);
         }
         xhr.send();
