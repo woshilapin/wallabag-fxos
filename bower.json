@@ -1,0 +1,23 @@
+{
+  "name": "wallabag-fxos",
+  "version": "1.0.0-rc1",
+  "homepage": "https://github.com/wallabag/wallabag-fxos.git",
+  "authors": [
+    "freddyb"
+  ],
+  "description": "Access your Wallabag from your Firefox OS phone.",
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "brick-appbar": "https://github.com/mozbrick/brick-appbar.git",
+    "brick-tabbar": "https://github.com/mozbrick/brick-tabbar.git",
+    "brick-deck": "https://github.com/mozbrick/brick-deck.git",
+    "localforage": "~1.2.3"
+  }
+}

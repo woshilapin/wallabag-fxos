@@ -27,5 +27,10 @@ This app serves as a [wallabag](https://www.wallabag.org/) client for Firefox OS
 ### The settings require long and unwieldy text input.
 ![Home](screenshots/settings.png)
 
+## Build
+In order to build the package, you have to run Bower first to install
+dependencies.
 
-
+```
+bower install
+```
